@@ -1,3 +1,5 @@
+// @flow
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -7,7 +9,50 @@ import {
     onUpdateTrack
 } from '../actions/tracks';
 
-class Tracks extends Component {
+type State = {
+    AddInpName: ?string,
+    playlist: number,
+    playlistEdit: number,
+    editId: ?number,
+    EditInpname: ?string,
+    FindName: ?string
+};
+type Props = {
+    tracks:
+        Array<
+            {
+                name: string,
+                id: number,
+                playlist: number
+            }>,
+    playlists:
+        Array<
+            {
+                name: string,
+                id: number
+            }>,
+    onAddTrack:
+        (name: string)
+            => void,
+    onDeleteTrack:
+        (
+            ?{
+            name: string,
+            id: number,
+            playlist: number,
+    }) => void,
+    onUpdateTrack:(
+        {
+            name: string,
+            id: number,
+            playlist: number,
+        }
+    ) => void,
+}
+class Tracks extends Component<Props, State> {
+    handleFind: (
+        event: Event
+        ) => void;
     constructor(props) {
         super(props);
 
@@ -20,7 +65,7 @@ class Tracks extends Component {
             FindName: "",
         }
 
-        this.handleFind = (event) => {
+        this.handleFind = (event: SyntheticEvent) => {
             this.setState({
                 FindName: event.target.value
             })
