@@ -1,8 +1,7 @@
 const initialState = [
   {
     name: 'Eminem new Album',
-    id: 1,
-    showing: true,
+    id: 1
   },
   {
     name: 'Rick Ross new Album',

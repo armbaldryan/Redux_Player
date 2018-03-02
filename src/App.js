@@ -1,3 +1,5 @@
+// @flow
+
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Tracks from './components/Tracks';
@@ -6,7 +8,10 @@ import Header from './components/Header';
 import Track from './components/Track';
 import Playlist from './components/Playlist';
 
-export default class App extends Component {
+type Props = {
+  title:string
+}
+export default class App extends Component<Props>{
   render() {
     return (
       <div>

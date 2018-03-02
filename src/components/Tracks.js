@@ -1,3 +1,5 @@
+// @flow
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -7,7 +9,50 @@ import {
     onUpdateTrack
 } from '../actions/tracks';
 
-class Tracks extends Component {
+type State = {
+    AddInpName?: ?string,
+    playlist?: number,
+    playlistEdit?: number,
+    editId: ?number,
+    EditInpname: ?string,
+    FindName: ?string
+};
+type Props = {
+    tracks:
+        Array<
+            {
+                name: string,
+                id: number,
+                playlist: number
+            }>,
+    playlists:
+        Array<
+            {
+                name: string,
+                id: number
+            }>,
+    onAddTrack:
+        (
+            ?{
+                name: string,
+                playlist: () =>void,
+            }) => void,
+    onDeleteTrack:
+        (
+            ?{
+            name: string,
+            id: number,
+            playlist: number,
+    }) => void,
+    onUpdateTrack:(
+        {
+            name: string,
+            id: number,
+            playlist: number,
+        }
+    ) => void,
+}
+class Tracks extends Component<Props, State> {
     constructor(props) {
         super(props);
 
@@ -19,17 +64,20 @@ class Tracks extends Component {
             EditInpname: "",
             FindName: "",
         }
-
-        this.handleFind = (event) => {
+    }
+        handleFind = (event:SyntheticEvent): void => {
             this.setState({
                 FindName: event.target.value
             })
         }
-        this.AddTrack = () => {
-            const newTrack = {
+        AddTrack = (): void => {
+            const newTrack : {
+                name: string,
+                playlist: number,
+            } =  {
                 name: this.state.AddInpName,
                 playlist: Number(this.state.playlist)
-            }
+            };
             if (this.state.AddInpName) {
                 this.props.onAddTrack(newTrack);
             }
@@ -37,36 +85,36 @@ class Tracks extends Component {
                 AddInpName: ""
             })
         }
-        this.handleAdd = (event) => {
+        handleAdd = (event:SyntheticEvent): void => {
             this.setState({
                 AddInpName: event.target.value
             })
         }
-        this.selectChange = (event) => {
+        selectChange = (event:SyntheticEvent): void => {
             this.setState({
                 playlist: event.target.value
             })
         }
-        this.editSelectChange = (event) => {
+        editSelectChange = (event: SyntheticEvent): void => {
             this.setState({
                 playlistEdit: event.target.value
             })
         }
-        this.deleteTrack = (track) => {
+        deleteTrack = (track): void  => {
             this.props.onDeleteTrack(track);
         }
-        this.editTrack = (track) => {
+        editTrack = (track): void => {
             this.setState({
                 EditInpname: track.name,
                 editId: track.id
             })
         }
-        this.handleChange = (event) => {
+        handleChange = (event): void => {
             this.setState({
                 EditInpname: event.target.value
             })
         }
-        this.saveTrack = (track) => {
+        saveTrack = (track): void  => {
             this.props.onUpdateTrack({
                 ...track,
                 name: this.state.EditInpname,
@@ -76,6 +124,9 @@ class Tracks extends Component {
                 editId: null
             })
         }
+    playListName = (): void => {
+        const selectedPlaylist = this.props.playlists.find( playlist => playlist.id === track.playlist );
+        return selectedPlaylist ? selectedPlaylist.name : null
     }
     render() {
         return (
@@ -104,7 +155,7 @@ class Tracks extends Component {
                             </option>
                     )}
                 </select>
-                {this.props.playlists.map((item, index) =>
+                {this.props.playlists.map((item) =>
                     <Link to={`/Playlists/${item.id}/`} key={item.id} className="mdc-button mdc-card__action">
                         <button
                             type="text"
@@ -154,11 +205,7 @@ class Tracks extends Component {
                                     </li>
                                     <div className="plName">
                                         <Link to={`/Playlists/${track.playlist}/`} className="mdc-button mdc-card__action">
-                                            {this.props.playlists.find(
-                                                (playlist) => {
-                                                    return playlist.id === track.playlist
-                                                }
-                                            ).name}
+                                            {this.playListName}
                                         </Link>
                                     </div>
                                     <button onClick={() => this.deleteTrack(track)}>Delete track</button>
