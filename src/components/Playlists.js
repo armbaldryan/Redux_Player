@@ -19,33 +19,39 @@ type Props = {
             id: number,
             playlist: number
         }>,
+
     playlists:
         Array<{
             name: string,
             id: number
         }>,
+
     onAddPlaylist:
-                (name: string) => void,
+        (name: string) => void,
+
     onDeletePlaylist: ({
         name: string,
         id: number
     }) => void,
-    onDeleteTrack:(?{
+
+    onDeleteTrack: (?{
         name: string,
         id: number,
         playlist: number,
     }) => void,
-    onUpdatePlaylist:({
+
+    onUpdatePlaylist: ({
         name: string,
         id: number
     }) => void,
+
 };
+
 type State = {
     mainName: string,
     editedID: ?number,
     name: string,
 }
-
 
 class Playlists extends Component<Props, State> {
     state = {
@@ -64,7 +70,9 @@ class Playlists extends Component<Props, State> {
     deletePlaylist(playlist) {
         this.props.onDeletePlaylist(playlist);
         const track = this.props.tracks.find(
-            (track) => { return track.playlist === playlist.id }) || null;
+            (track) => {
+                return track.playlist === playlist.id
+                }) || null;
         this.props.onDeleteTrack(track);
     }
 
@@ -127,19 +135,18 @@ class Playlists extends Component<Props, State> {
             </div>
         );
     }
-
 }
 
 const mapStateToProps = (state) => ({
     playlists: state.playlists,
     tracks: state.tracks,
-})
+});
 
 const mapDispatchToProps = (dispatch) => ({
     onAddPlaylist: (name) => onAddPlaylist(dispatch, name),
     onUpdatePlaylist: (track) => onUpdatePlaylist(dispatch, track),
     onDeletePlaylist: (track) => onDeletePlaylist(dispatch, track),
     onDeleteTrack: (track) => onDeleteTrack(dispatch, track),
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Playlists);

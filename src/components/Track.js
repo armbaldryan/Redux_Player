@@ -40,7 +40,8 @@ class Track extends React.Component<Props> {
         this.track = this.props.tracks.find(
             track => track.id === Number(this.props.match.params.track)
         ) || null;
-        this.playlist = this.props.playLists.find(playlist => playlist.id === (this.track && this.track.playlist)) || null;
+        this.playlist = this.props.playLists.find(
+            playlist => playlist.id === (this.track && this.track.playlist)) || null;
     }
     render() {
         return (

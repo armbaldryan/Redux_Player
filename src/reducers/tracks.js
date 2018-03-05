@@ -1,3 +1,4 @@
+// @flow
 const initialState = [
   {
     name: 'Mockingbird',
@@ -9,9 +10,21 @@ const initialState = [
     id: 2,
     playlist: 2
   },
-]
-
-export default function tracks(state = initialState, action) {
+];
+type IAppState = Array<{
+    name: string,
+    id: number,
+    playlist: number
+}>;
+type IAppAction = {
+    type: string,
+    payload:{
+        name: string,
+        id: number,
+        playlist: number
+    }
+};
+export default function tracks(state:IAppState = initialState, action:IAppAction) {
   if (action.type === 'ADD_TRACK') {
     return [
       ...state,
@@ -22,12 +35,12 @@ export default function tracks(state = initialState, action) {
     ];
   } else if (action.type === 'DELETE_TRACK') {
     return [
-      ...state.filter((item, index) => item.id !== action.payload.id)
+      ...state.filter((item) => item.id !== action.payload.id)
     ];
   }
   else if (action.type === 'EDIT_TRACK') {
     return [
-      ...state.map((item, index) => {
+      ...state.map((item) => {
         if (item.id === action.payload.id) {
           return action.payload;
         }

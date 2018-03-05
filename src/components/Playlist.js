@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -7,10 +8,62 @@ import {
     onUpdateTrack
 } from '../actions/tracks';
 
-class Playlist extends React.Component {
-    constructor(props) {
+type Props = {
+    tracks:
+        Array<{
+            name: string,
+            id: number,
+            playlist: number
+        }>,
+
+    playlists:
+        Array<{
+            name: string,
+            id: number
+        }>,
+
+    onDeleteTrack:
+        (?{
+            name: string,
+            id: number,
+            playlist: number,
+        }) => void,
+
+    onUpdateTrack:
+        (?{
+            name: ?string,
+            id: number,
+            playlist: number,
+        }) => void,
+
+    onAddTrack:
+        (?{
+            name: string,
+            id: number,
+            playlist: number,
+        }) => void,
+
+    match:
+        {
+        params:
+            {
+                playlist:number
+            }
+        }
+};
+
+type State = {
+    AddInpName: ?string,
+    playlist: ?number,
+    playlistEdit: ?number,
+    editId: ?number,
+    EditInpname: ?string,
+    FindName: ?string,
+};
+
+class Playlist extends React.Component<Props, State> {
+    constructor(props: Props) {
         super(props);
-        this.match = this.props.match;
 
         this.state = {
             AddInpName: '',
@@ -19,33 +72,40 @@ class Playlist extends React.Component {
             editId: null,
             EditInpname: "",
             FindName: "",
+        };
+
         }
 
-        this.handleFind = (event) => {
+        handleFind = (event) => {
             this.setState({
                 FindName: event.target.value
             })
-        }
-        this.editSelectChange = (event) => {
+        };
+
+        editSelectChange = (event) => {
             this.setState({
                 playlistEdit: event.target.value
             })
-        }
-        this.deleteTrack = (track) => {
+        };
+
+        deleteTrack = (track) => {
             this.props.onDeleteTrack(track);
-        }
-        this.editTrack = (track) => {
+        };
+
+        editTrack = (track) => {
             this.setState({
                 EditInpname: track.name,
                 editId: track.id
             })
-        }
-        this.handleChange = (event) => {
+        };
+
+        handleChange = (event) => {
             this.setState({
                 EditInpname: event.target.value
             })
-        }
-        this.saveTrack = (track) => {
+        };
+
+        saveTrack = (track) => {
             this.props.onUpdateTrack({
                 ...track,
                 name: this.state.EditInpname,
@@ -54,9 +114,10 @@ class Playlist extends React.Component {
             this.setState({
                 editId: null
             })
-        }
-    }
+        };
+
     render() {
+        const findName = this.state.FindName != null ? this.state.FindName : "";
         return (
             <div>
                 <ul>
@@ -66,7 +127,7 @@ class Playlist extends React.Component {
                     />
                     <span>FIND TRACK</span>
                     {this.props.playlists.map(playlist => {
-                        if (playlist.id === Number(this.match.params.playlist)) {
+                        if (playlist.id === Number(this.props.match.params.playlist)) {
                             return (
                                 <div className="Playlist_name" key={playlist.id}>{playlist.name}</div>
                             )
@@ -75,20 +136,21 @@ class Playlist extends React.Component {
                             return null;
                         }
                     })}
-                    {this.props.tracks.filter(item => item.name.indexOf(this.state.FindName) !== -1)
-                        .map((track, index) =>
-                            (track.playlist === Number(this.match.params.playlist)) ?
+                    {this.props.tracks.filter(item => item.name.indexOf(findName ? findName : "") !== -1)
+                        .map((track, index) =>  {
+                            const currentPlayList = this.props.playlists.find(playlist => playlist.id === track.playlist);
+                            return (track.playlist === Number(this.props.match.params.playlist)) ?
                                 (track.id === this.state.editId) ?
-                                    <div key={track.id} id={index}>
+                                    (<div key={track.id} id={index}>
                                         <input type="text"
-                                            value={this.state.EditInpname}
-                                            onChange={this.handleChange} />
+                                               value={this.state.EditInpname}
+                                               onChange={this.handleChange}/>
                                         <select
                                             onChange={this.editSelectChange}
                                             value={this.state.playlistEdit}
                                         >
                                             {this.props.playlists.map(
-                                                (playlist, index) =>
+                                                (playlist) =>
                                                     <option
                                                         value={playlist.id}
                                                         key={playlist.id}
@@ -100,25 +162,22 @@ class Playlist extends React.Component {
                                         </select>
                                         <button onClick={() => this.deleteTrack(track)}>Delete track</button>
                                         <button onClick={() => this.saveTrack(track)}>Save track</button>
-                                    </div>
-                                    :
+                                    </div>)
+                                    :(
                                     <div key={track.id} id={index}>
                                         <li className="track_back">
                                             {track.name}
-                                            <Link to={`/Playlists/${track.playlist}/${track.id}`} className="show_more">Show More</Link>
+                                            <Link to={`/Playlists/${track.playlist}/${track.id}`} className="show_more">Show
+                                                More</Link>
                                         </li>
                                         <div className="plName">
-                                            {this.props.playlists.find(
-                                                (playlist) => {
-                                                    return playlist.id === track.playlist
-                                                }
-                                            ).name}
+                                            { currentPlayList && currentPlayList.name}
                                         </div>
                                         <button onClick={() => this.deleteTrack(track)}>Delete track</button>
                                         <button onClick={() => this.editTrack(track)}>Edit track</button>
-                                    </div>
+                                    </div>)
                                 : false
-                        )
+                        })
                     }
                 </ul>
             </div>
@@ -128,13 +187,13 @@ class Playlist extends React.Component {
 const mapStateToProps = (state) => ({
     tracks: state.tracks,
     playlists: state.playlists,
-})
+});
 
 const mapDispatchToProps = (dispatch) => ({
     onAddTrack: (track) => onAddTrack(dispatch, track),
     onUpdateTrack: (track) => onUpdateTrack(dispatch, track),
     onDeleteTrack: (track) => onDeleteTrack(dispatch, track),
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Playlist)
 

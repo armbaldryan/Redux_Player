@@ -28,19 +28,21 @@ type Props = {
             id: number,
             playlist: number,
         }) => void,
+
     onUpdateTrack:
         (?{
             name: ?string,
             id: number,
             playlist: number,
         }) => void,
+
     onAddTrack:
         (?{
             name: string,
-            id: number,
             playlist: number,
         }) => void,
-}
+};
+
 type State = {
     AddInpName: ?string,
     playlist: ?number,
@@ -48,7 +50,8 @@ type State = {
     editId: ?number,
     EditInpname: ?string,
     FindName: ?string,
-}
+};
+
 class Tracks extends Component<Props,State> {
 
     constructor(props) {
@@ -60,14 +63,16 @@ class Tracks extends Component<Props,State> {
             editId: null,
             EditInpname: "",
             FindName: "",
+        };
         }
-    }
+
         handleFind = (event: SyntheticEvent<HTMLInputElement>) : void => {
             this.setState({
                 FindName: event.currentTarget.value
             })
         };
-        AddTrack = (): void =>{
+
+        AddTrack = (): void => {
             const newTrack :{
                 id?: number,
                 name: string,
@@ -76,54 +81,65 @@ class Tracks extends Component<Props,State> {
                 name: this.state.AddInpName? this.state.AddInpName : "",
                 playlist: Number(this.state.playlist)
             };
+
             if (this.state.AddInpName) {
                 if(newTrack != null){
                 this.props.onAddTrack(newTrack);
                 }
             }
+
             this.setState({
                 AddInpName: ""
             })
         };
+
         handleAdd = (event: SyntheticEvent<HTMLInputElement>): void => {
             this.setState({
                 AddInpName: event.currentTarget.value
             })
         };
+
         selectChange = (event: SyntheticEvent<HTMLSelectElement>) : void => {
             this.setState({
                 playlist: Number(event.currentTarget.value)
             })
         };
+
         editSelectChange = (event: SyntheticEvent<HTMLSelectElement>) : void => {
             this.setState({
                 playlistEdit: Number(event.currentTarget.value)
             })
         };
+
         deleteTrack = (track) : void => {
             this.props.onDeleteTrack(track);
         };
+
         editTrack = (track) : void => {
             this.setState({
                 EditInpname: track.name,
                 editId: track.id
             })
         };
+
         handleChange = (event: SyntheticEvent<HTMLInputElement>) : void => {
             this.setState({
                 EditInpname: event.currentTarget.value
             })
         };
+
         saveTrack = (track) : void => {
             this.props.onUpdateTrack({
                 ...track,
                 name: this.state.EditInpname,
                 playlist: Number(this.state.playlistEdit),
             });
+
             this.setState({
                 editId: null
             })
         };
+
     render() {
         const findName = this.state.FindName != null ? this.state.FindName : "";
         return (

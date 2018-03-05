@@ -7,9 +7,19 @@ const initialState = [
     name: 'Rick Ross new Album',
     id: 2
   },
-]
-
-export default function playlists(state = initialState, action) {
+];
+type IAppState = Array<{
+    name: string,
+    id: number
+}>;
+type IAppAction = {
+    type: string,
+    payload:{
+        name: string,
+        id: number,
+    }
+};
+export default function playlists(state:IAppState = initialState, action:IAppAction) {
   if (action.type === 'ADD_PLAYLIST') {
     return [
       ...state,
@@ -22,12 +32,12 @@ export default function playlists(state = initialState, action) {
     ];
   } else if (action.type === 'DELETE_PLAYLIST') {
     return [
-      ...state.filter((item, index) => item.id !== action.payload.id)
+      ...state.filter((item) => item.id !== action.payload.id)
     ];
   }
   else if (action.type === 'EDIT_PLAYLIST') {
     return [
-      ...state.map((item, index) => {
+      ...state.map((item) => {
         if (item.id === action.payload.id) {
           return action.payload;
         }
