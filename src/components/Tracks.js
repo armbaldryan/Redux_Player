@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import {getPlayListsState, getTrackState} from '../selectors';
 import {
     onAddTrack,
     onDeleteTrack,
@@ -241,8 +242,8 @@ class Tracks extends Component<Props,State> {
 
 
 const mapStateToProps = (state) => ({
-    tracks: state.tracks,
-    playlists: state.playlists,
+    tracks: getTrackState(state),
+    playlists: getPlayListsState(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

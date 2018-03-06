@@ -5,11 +5,13 @@ import { createStore } from 'redux';
 import { HashRouter } from 'react-router-dom';
 import App from './App';
 import reducer from './reducers';
-
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
 const store = createStore(
-      reducer,
-      window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    reducer,
+    composeWithDevTools(applyMiddleware(thunk))
     );
 
 ReactDOM.render(
