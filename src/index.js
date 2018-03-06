@@ -12,13 +12,13 @@ import thunk from 'redux-thunk';
 const store = createStore(
     reducer,
     composeWithDevTools(applyMiddleware(thunk))
-    );
+);
 
 ReactDOM.render(
-  <Provider store={store}>
-    <HashRouter>
-      <App title="React Redux PlayList" />
-    </HashRouter>
-  </Provider>,
-  document.getElementById('root')
+    <Provider store={store}>
+        <HashRouter>
+            <App title="React Redux PlayList" />
+        </HashRouter>
+    </Provider>,
+    document.getElementById('root')
 );
